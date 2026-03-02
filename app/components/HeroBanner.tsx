@@ -43,7 +43,7 @@ export default function HeroBanner() {
         aria-hidden="true"
       />
 
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] items-end px-6 pb-20 md:px-12 lg:pb-24">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] items-center px-6 pt-14 md:px-12 md:pt-16 lg:pt-20">
         <div className="hero-content pointer-events-auto max-w-[760px]">
           <p className="hero-eyebrow">Ceilidh Band . Scotland</p>
           <Image
@@ -58,10 +58,10 @@ export default function HeroBanner() {
             High-energy ceilidh sets with a modern edge designed for packed dance floors.
           </p>
           <div className="hero-actions">
-            <a href="#" className="hero-btn hero-btn--primary">
+            <a href="#bookings" className="hero-btn hero-btn--primary">
               Check Availability
             </a>
-            <a href="#" className="hero-btn hero-btn--secondary">
+            <a href="#watch" className="hero-btn hero-btn--secondary">
               Watch Highlights
             </a>
           </div>

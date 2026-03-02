@@ -1,7 +1,8 @@
+import WatchVideoCard from "./WatchVideoCard";
+
 type YouTubeVideo = {
   id: string;
   title: string;
-  thumbnail: string;
 };
 
 type YouTubeChannelsResponse = {
@@ -84,15 +85,6 @@ async function getLatestVideos(
       const snippet = item?.snippet;
       const videoId = snippet?.resourceId?.videoId;
       const title = snippet?.title;
-      const thumbnails = snippet?.thumbnails;
-      const thumbnail =
-        thumbnails?.maxres?.url ??
-        thumbnails?.standard?.url ??
-        thumbnails?.high?.url ??
-        thumbnails?.medium?.url ??
-        thumbnails?.default?.url ??
-        "";
-
       if (!videoId || !title) {
         return null;
       }
@@ -100,7 +92,6 @@ async function getLatestVideos(
       return {
         id: videoId,
         title,
-        thumbnail,
       };
     })
     .filter((video): video is YouTubeVideo => video !== null);
@@ -133,20 +124,7 @@ export default async function WatchSection() {
         {videos.length > 0 ? (
           <div className="watch-grid">
             {videos.map((video) => (
-              <article key={video.id} className="watch-card" aria-label={video.title}>
-                <div className="watch-card__media">
-                  <iframe
-                    className="watch-card__iframe"
-                    src={`https://www.youtube.com/embed/${video.id}?rel=0&modestbranding=1`}
-                    title={video.title}
-                    loading="lazy"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  />
-                </div>
-                <p className="watch-card__title">{video.title}</p>
-              </article>
+              <WatchVideoCard key={video.id} videoId={video.id} title={video.title} />
             ))}
           </div>
         ) : (

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const navItems = [
-  { label: "Home", href: "#" },
+  { label: "Home", href: "#top" },
   { label: "About", href: "#about" },
   { label: "Media", href: "#watch" },
   { label: "Mentions", href: "#mentions" },
@@ -122,7 +122,7 @@ export default function SiteHeader() {
 
   useEffect(() => {
     const onResize = () => {
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= 1280) {
         setIsMenuOpen(false);
       }
     };
@@ -131,10 +131,37 @@ export default function SiteHeader() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  useEffect(() => {
+    if (!isMenuOpen) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isMenuOpen]);
+
+  const handleMobileLinkClick = (href: string) => {
+    setIsMenuOpen(false);
+
+    if (href === "#top") {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+    }
+  };
+
   return (
     <header ref={headerRef} className="site-header">
       <div className="site-header__inner">
-        <a href="#" aria-label="Skara Home" className="site-header__logo">
+        <a href="#top" aria-label="Skara Home" className="site-header__logo">
           <Image
             src="/logo white lite.png"
             alt="Skara logo"
@@ -150,7 +177,7 @@ export default function SiteHeader() {
               {item.label}
             </a>
           ))}
-          <a href="#" className="site-nav__cta">
+          <a href="#bookings" className="site-nav__cta">
             Book Now
           </a>
           <a href={navItems[4].href} className="site-nav__link">
@@ -160,34 +187,50 @@ export default function SiteHeader() {
 
         <button
           type="button"
-          className="site-nav__toggle"
+          className={`site-nav__toggle ${isMenuOpen ? "is-open" : ""}`}
           aria-expanded={isMenuOpen}
           aria-controls="mobile-menu"
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           onClick={() => setIsMenuOpen((open) => !open)}
         >
-          Menu
+          <span className="site-nav__toggle-line" />
+          <span className="site-nav__toggle-line" />
+          <span className="site-nav__toggle-line" />
         </button>
       </div>
 
-      <nav
-        id="mobile-menu"
-        aria-label="Mobile"
-        className={`site-nav__mobile ${isMenuOpen ? "is-open" : ""}`}
+      <div
+        className={`site-nav__drawer-wrap ${isMenuOpen ? "is-open" : ""}`}
+        aria-hidden={!isMenuOpen}
+        onClick={() => setIsMenuOpen(false)}
       >
-        {navItems.map((item) => (
-          <a
-            key={item.label}
-            href={item.href}
-            className="site-nav__mobile-link"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {item.label}
-          </a>
-        ))}
-        <a href="#" className="site-nav__mobile-cta" onClick={() => setIsMenuOpen(false)}>
+        <div className="site-nav__drawer-backdrop" />
+        <nav
+          id="mobile-menu"
+          aria-label="Mobile"
+          className={`site-nav__mobile ${isMenuOpen ? "is-open" : ""}`}
+          onClick={(event) => event.stopPropagation()}
+        >
+          {navItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="site-nav__mobile-link"
+              onClick={() => handleMobileLinkClick(item.href)}
+            >
+              {item.label}
+            </a>
+          ))}
+        <a
+          href="#bookings"
+          className="site-nav__mobile-cta"
+          onClick={() => setIsMenuOpen(false)}
+        >
           Book Now
         </a>
       </nav>
+      </div>
     </header>
   );
 }
+

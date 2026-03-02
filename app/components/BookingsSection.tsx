@@ -67,6 +67,7 @@ function getMonthGrid(date: Date) {
 }
 
 export default function BookingsSection() {
+  const FORM_NAME = "booking-enquiry";
   const bookedSet = useMemo(() => new Set(AVAILABILITY.booked), []);
   const notes = AVAILABILITY.notes ?? {};
   const today = useMemo(() => startOfTodayLocal(), []);
@@ -83,6 +84,8 @@ export default function BookingsSection() {
   const [eventType, setEventType] = useState("");
   const [location, setLocation] = useState("");
   const [message, setMessage] = useState("");
+  const [botField, setBotField] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const selectedDate = useMemo(
     () => (selectedISO ? parseISODateLocal(selectedISO) : null),
@@ -116,33 +119,52 @@ export default function BookingsSection() {
     chooseDate(next);
   }
 
-  function buildMailto() {
-    const subject = `Skara booking enquiry - ${selectedISO || "Date TBC"}`;
-    const lines = [
-      `Name: ${name || "-"}`,
-      `Email: ${email || "-"}`,
-      `Date: ${selectedISO || "-"}`,
-      `Event type: ${eventType || "-"}`,
-      `Location: ${location || "-"}`,
-      "",
-      "Details:",
-      message || "-",
-    ];
-
-    const body = lines.join("\n");
-    return `mailto:info@skaraceilidh.com?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`;
-  }
-
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !selectedISO) {
       setNotice("Add your name, email, and pick a date to send an enquiry.");
       return;
     }
+    if (botField) return;
+
     setNotice(null);
-    window.location.href = buildMailto();
+    setSubmitting(true);
+
+    const payload = new URLSearchParams({
+      "form-name": FORM_NAME,
+      name: name.trim(),
+      email: email.trim(),
+      date: selectedISO,
+      eventType: eventType.trim(),
+      location: location.trim(),
+      message: message.trim(),
+      "bot-field": botField,
+    });
+
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString(),
+      });
+
+      if (!response.ok) {
+        setNotice("We could not send that enquiry. Please try again or email us directly.");
+        return;
+      }
+
+      setNotice("Thanks. Your booking enquiry has been sent.");
+      setName("");
+      setEmail("");
+      setEventType("");
+      setLocation("");
+      setMessage("");
+      setSelectedISO("");
+    } catch {
+      setNotice("We could not send that enquiry. Please try again or email us directly.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -247,7 +269,26 @@ export default function BookingsSection() {
             </div>
           </div>
 
-          <form className="bookingForm" onSubmit={onSubmit} aria-label="Booking form">
+          <form
+            className="bookingForm"
+            name={FORM_NAME}
+            method="POST"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
+            onSubmit={onSubmit}
+            aria-label="Booking form"
+          >
+            <input type="hidden" name="form-name" value={FORM_NAME} />
+            <p hidden>
+              <label>
+                Don&apos;t fill this out:{" "}
+                <input
+                  name="bot-field"
+                  value={botField}
+                  onChange={(e) => setBotField(e.target.value)}
+                />
+              </label>
+            </p>
             <div className="formHeader">
               <p className="formTitle">Request a booking</p>
               <p className="muted formSub">
@@ -260,6 +301,7 @@ export default function BookingsSection() {
                 <span className="fieldLabel">Date</span>
                 <input
                   className="input"
+                  name="date"
                   type="date"
                   value={selectedISO}
                   onChange={(e) => onDateInput(e.target.value)}
@@ -283,6 +325,7 @@ export default function BookingsSection() {
                 <span className="fieldLabel">Name</span>
                 <input
                   className="input"
+                  name="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoComplete="name"
@@ -295,6 +338,7 @@ export default function BookingsSection() {
                 <span className="fieldLabel">Email</span>
                 <input
                   className="input"
+                  name="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -308,6 +352,7 @@ export default function BookingsSection() {
                 <span className="fieldLabel">Event type</span>
                 <input
                   className="input"
+                  name="eventType"
                   value={eventType}
                   onChange={(e) => setEventType(e.target.value)}
                   placeholder="Wedding / party / corporate"
@@ -318,6 +363,7 @@ export default function BookingsSection() {
                 <span className="fieldLabel">Location</span>
                 <input
                   className="input"
+                  name="location"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="Town / venue"
@@ -328,6 +374,7 @@ export default function BookingsSection() {
                 <span className="fieldLabel">Message</span>
                 <textarea
                   className="textarea"
+                  name="message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={5}
@@ -339,8 +386,12 @@ export default function BookingsSection() {
             {notice ? <p className="formNotice">{notice}</p> : null}
 
             <div className="formActions">
-              <button type="submit" className="bookings-btn bookings-btn--primary">
-                Send enquiry
+              <button
+                type="submit"
+                className="bookings-btn bookings-btn--primary"
+                disabled={submitting}
+              >
+                {submitting ? "Sending..." : "Send enquiry"}
               </button>
               <a className="bookings-text-link" href="mailto:info@skaraceilidh.com">
                 Or email info@skaraceilidh.com
