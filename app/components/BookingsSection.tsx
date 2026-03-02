@@ -142,7 +142,7 @@ export default function BookingsSection() {
     });
 
     try {
-      const response = await fetch("/", {
+      const response = await fetch("/__forms.html", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: payload.toString(),
@@ -273,8 +273,6 @@ export default function BookingsSection() {
             className="bookingForm"
             name={FORM_NAME}
             method="POST"
-            data-netlify="true"
-            data-netlify-honeypot="bot-field"
             onSubmit={onSubmit}
             aria-label="Booking form"
           >
