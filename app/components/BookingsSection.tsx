@@ -77,7 +77,7 @@ export default function BookingsSection() {
   const [notice, setNotice] = useState<string | null>(null);
 
   const viewBase = useMemo(() => addMonthsLocal(today, monthOffset), [today, monthOffset]);
-  const viewMonths = useMemo(() => [viewBase, addMonthsLocal(viewBase, 1)], [viewBase]);
+  const viewMonths = useMemo(() => [viewBase], [viewBase]);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

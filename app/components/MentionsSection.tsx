@@ -1,19 +1,10 @@
-const mentions = [
-  {
-    quote: '"Kept them up and dancing for hours!"',
-    source: "Siobhan Amy Photography",
-  },
-  {
-    quote: '"A really good ceilidh dance band."',
-    source: "Cluarantonn (Scottish Digest)",
-  },
-  {
-    quote: '"Live ceilidh music ... to keep you dancing all night."',
-    source: "Perth Racecourse (Hogmanay Hoolie)",
-  },
-];
+import type { Mention } from "@/app/lib/site-content";
 
-export default function MentionsSection() {
+type MentionsSectionProps = {
+  mentions: Mention[];
+};
+
+export default function MentionsSection({ mentions }: MentionsSectionProps) {
   return (
     <section id="mentions" className="mentions-section" aria-label="Mentions">
       <div className="mentions-section__inner">
@@ -25,9 +16,20 @@ export default function MentionsSection() {
 
         <div className="mentions-grid">
           {mentions.map((mention) => (
-            <article key={mention.source} className="mentions-card">
+            <article key={mention.id} className="mentions-card">
               <p className="mentions-card__quote">{mention.quote}</p>
-              <p className="mentions-card__source">{mention.source}</p>
+              {mention.url ? (
+                <a
+                  className="mentions-card__source"
+                  href={mention.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {mention.source}
+                </a>
+              ) : (
+                <p className="mentions-card__source">{mention.source}</p>
+              )}
             </article>
           ))}
         </div>

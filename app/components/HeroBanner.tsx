@@ -58,10 +58,20 @@ export default function HeroBanner() {
             High-energy ceilidh sets with a modern edge designed for packed dance floors.
           </p>
           <div className="hero-actions">
-            <a href="#bookings" className="hero-btn hero-btn--primary">
+            <a
+              href="#bookings"
+              className="hero-btn hero-btn--primary"
+              data-track-button="true"
+              data-track-label="Check availability"
+            >
               Check Availability
             </a>
-            <a href="#watch" className="hero-btn hero-btn--secondary">
+            <a
+              href="#watch"
+              className="hero-btn hero-btn--secondary"
+              data-track-button="true"
+              data-track-label="Watch highlights"
+            >
               Watch Highlights
             </a>
           </div>

@@ -6,6 +6,7 @@ import WhySkaraSection from "./components/WhySkaraSection";
 import MentionsSection from "./components/MentionsSection";
 import BookingsSection from "./components/BookingsSection";
 import SectionDivider from "./components/SectionDivider";
+import { getSiteContent } from "./lib/site-content";
 
 const socialLinks = [
   {
@@ -46,7 +47,9 @@ const socialLinks = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const siteContent = await getSiteContent();
+
   return (
     <div id="top" className="min-h-screen bg-[#061a2b] text-white">
       <SiteHeader />
@@ -54,7 +57,7 @@ export default function Home() {
         <HeroBanner />
         <SectionDivider className="py-6 md:py-8" />
 
-        <BioBanner />
+        <BioBanner about={siteContent.about} />
         <SectionDivider className="py-6 md:py-8" />
 
         <WatchSection />
@@ -63,7 +66,7 @@ export default function Home() {
         <WhySkaraSection />
         <SectionDivider className="py-6 md:py-8" />
 
-        <MentionsSection />
+        <MentionsSection mentions={siteContent.mentions} />
         <SectionDivider className="py-6 md:py-8" />
 
         <BookingsSection />

@@ -1,36 +1,187 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GA4 Analytics Dashboard (Next.js + React + TypeScript)
 
-## Getting Started
+This project includes a Wix-style analytics dashboard at `/admin` backed by the Google Analytics 4 (GA4) Data API.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Desktop-first, responsive dashboard layout with:
+  - left sidebar navigation
+  - top header with search + date range controls
+  - card-based KPI, chart, and table widgets
+- Date range selector:
+  - Last 7 days (`preset=7d`)
+  - Last 28 days (`preset=28d`)
+  - Last 90 days (`preset=90d`)
+  - Custom (`preset=custom&startDate=YYYY-MM-DD&endDate=YYYY-MM-DD`)
+- KPI cards with period-over-period change:
+  - Users
+  - New users
+  - Sessions
+  - Engagement rate
+  - Average engagement time
+  - Conversions (GA4 key events)
+  - Total revenue
+- Charts:
+  - Users vs Sessions line chart (daily)
+  - Top pages/screens bar chart
+  - Traffic acquisition donut chart (default channel group)
+- Tables:
+  - Top navigation items (from navbar clicks)
+  - Top campaigns
+- Per-widget loading, empty-state, and error-state UI.
+- Caching by widget + date range on both client and server to reduce API calls.
+
+## Component Structure
+
+- `app/admin/components/DashboardLayout.tsx`
+- `app/admin/components/SidebarNav.tsx`
+- `app/admin/components/DashboardHeader.tsx`
+- `app/admin/components/KPIGrid.tsx`
+- `app/admin/components/UsersSessionsChart.tsx`
+- `app/admin/components/TopPagesChart.tsx`
+- `app/admin/components/AcquisitionDonutChart.tsx`
+- `app/admin/components/LandingPagesTable.tsx`
+- `app/admin/components/CampaignsTable.tsx`
+- `app/admin/components/WidgetPanel.tsx`
+- `app/admin/components/SetupPanel.tsx`
+
+## GA4 API Layer
+
+- `app/lib/analytics/ga4-client.ts`
+- `app/lib/analytics/date-range.ts`
+- `app/lib/analytics/queries.ts`
+- `app/lib/analytics/cache.ts`
+- `app/lib/analytics/contracts.ts`
+
+Each widget has its own query function in `queries.ts` and its own API endpoint:
+
+- `/api/admin/analytics/kpis`
+- `/api/admin/analytics/timeseries`
+- `/api/admin/analytics/top-pages`
+- `/api/admin/analytics/acquisition`
+- `/api/admin/analytics/landing-pages`
+- `/api/admin/analytics/campaigns`
+
+## Required Environment Variables (Placeholders)
+
+Set these values in your environment:
+
+- `GOOGLE_ANALYTICS_PROPERTY_ID` (required)
+- `GOOGLE_APPLICATION_CREDENTIALS` (service account JSON path), or:
+  - `GOOGLE_CLIENT_EMAIL`
+  - `GOOGLE_PRIVATE_KEY`
+- `GA4_KEY_EVENTS` (optional comma-separated list for display context)
+
+Example:
+
+```env
+GOOGLE_ANALYTICS_PROPERTY_ID=123456789
+GOOGLE_APPLICATION_CREDENTIALS=C:\keys\ga4-service-account.json
+GA4_KEY_EVENTS=purchase,generate_lead,form_submit
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Example GA4 `runReport` Payloads
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### KPI Summary (Current Period)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```json
+{
+  "dateRanges": [{ "startDate": "2026-02-04", "endDate": "2026-03-03" }],
+  "metrics": [
+    { "name": "totalUsers" },
+    { "name": "newUsers" },
+    { "name": "sessions" },
+    { "name": "engagementRate" },
+    { "name": "averageSessionDuration" },
+    { "name": "keyEvents" },
+    { "name": "totalRevenue" }
+  ]
+}
+```
 
-## Learn More
+### Users/Sessions Trend
 
-To learn more about Next.js, take a look at the following resources:
+```json
+{
+  "dateRanges": [{ "startDate": "2026-02-04", "endDate": "2026-03-03" }],
+  "dimensions": [{ "name": "date" }],
+  "metrics": [{ "name": "totalUsers" }, { "name": "sessions" }],
+  "orderBys": [{ "dimension": { "dimensionName": "date" } }]
+}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Top Pages by Views
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```json
+{
+  "dateRanges": [{ "startDate": "2026-02-04", "endDate": "2026-03-03" }],
+  "dimensions": [{ "name": "pagePath" }],
+  "metrics": [{ "name": "screenPageViews" }],
+  "orderBys": [{ "metric": { "metricName": "screenPageViews" }, "desc": true }],
+  "limit": 8
+}
+```
 
-## Deploy on Vercel
+### Acquisition by Channel Group
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```json
+{
+  "dateRanges": [{ "startDate": "2026-02-04", "endDate": "2026-03-03" }],
+  "dimensions": [{ "name": "sessionDefaultChannelGroup" }],
+  "metrics": [{ "name": "sessions" }],
+  "orderBys": [{ "metric": { "metricName": "sessions" }, "desc": true }],
+  "limit": 8
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Top Navigation Items Table
+
+```json
+{
+  "dateRanges": [{ "startDate": "2026-02-04", "endDate": "2026-03-03" }],
+  "dimensions": [{ "name": "eventName" }],
+  "metrics": [{ "name": "eventCount" }, { "name": "totalUsers" }],
+  "dimensionFilter": {
+    "filter": {
+      "fieldName": "eventName",
+      "inListFilter": {
+        "values": [
+          "button_click_home",
+          "button_click_about",
+          "button_click_media",
+          "button_click_mentions",
+          "button_click_book_now",
+          "button_click_contact"
+        ]
+      }
+    }
+  },
+  "orderBys": [{ "metric": { "metricName": "eventCount" }, "desc": true }],
+  "limit": 10
+}
+```
+
+### Top Campaigns Table
+
+```json
+{
+  "dateRanges": [{ "startDate": "2026-02-04", "endDate": "2026-03-03" }],
+  "dimensions": [{ "name": "sessionCampaignName" }],
+  "metrics": [
+    { "name": "totalUsers" },
+    { "name": "sessions" },
+    { "name": "keyEvents" }
+  ],
+  "orderBys": [{ "metric": { "metricName": "sessions" }, "desc": true }],
+  "limit": 10
+}
+```
+
+## Run Locally
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000/admin`.

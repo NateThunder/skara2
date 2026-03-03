@@ -173,14 +173,30 @@ export default function SiteHeader() {
 
         <nav aria-label="Main" className="site-nav">
           {navItems.slice(0, 4).map((item) => (
-            <a key={item.label} href={item.href} className="site-nav__link">
+            <a
+              key={item.label}
+              href={item.href}
+              className="site-nav__link"
+              data-track-button="true"
+              data-track-label={item.label}
+            >
               {item.label}
             </a>
           ))}
-          <a href="#bookings" className="site-nav__cta">
+          <a
+            href="#bookings"
+            className="site-nav__cta"
+            data-track-button="true"
+            data-track-label="Book Now"
+          >
             Book Now
           </a>
-          <a href={navItems[4].href} className="site-nav__link">
+          <a
+            href={navItems[4].href}
+            className="site-nav__link"
+            data-track-button="true"
+            data-track-label={navItems[4].label}
+          >
             {navItems[4].label}
           </a>
         </nav>
@@ -216,6 +232,8 @@ export default function SiteHeader() {
               key={item.label}
               href={item.href}
               className="site-nav__mobile-link"
+              data-track-button="true"
+              data-track-label={item.label}
               onClick={() => handleMobileLinkClick(item.href)}
             >
               {item.label}
@@ -224,6 +242,8 @@ export default function SiteHeader() {
         <a
           href="#bookings"
           className="site-nav__mobile-cta"
+          data-track-button="true"
+          data-track-label="Book Now"
           onClick={() => setIsMenuOpen(false)}
         >
           Book Now

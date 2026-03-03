@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Inter, Outfit } from "next/font/google";
+import ButtonClickTracker from "@/app/components/ButtonClickTracker";
 import "./globals.css";
 
-const geistSans = Geist({
+const interSans = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -12,10 +14,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const cormorantDisplay = Cormorant_Garamond({
+const outfitDisplay = Outfit({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -46,8 +48,9 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${cormorantDisplay.variable} antialiased`}
+        className={`${interSans.variable} ${geistMono.variable} ${outfitDisplay.variable} antialiased`}
       >
+        <ButtonClickTracker />
         {children}
       </body>
     </html>

@@ -2,10 +2,16 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import type { AboutContent } from "@/app/lib/site-content";
 
-export default function BioBanner() {
+type BioBannerProps = {
+  about: AboutContent;
+};
+
+export default function BioBanner({ about }: BioBannerProps) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const headingLines = about.heading.split(/\r?\n/);
 
   useEffect(() => {
     const target = sectionRef.current;
@@ -36,16 +42,16 @@ export default function BioBanner() {
     >
       <div className="about-section__inner">
         <div className="about-section__content">
-          <p className="about-section__eyebrow">About</p>
+          <p className="about-section__eyebrow">{about.eyebrow}</p>
           <h2 className="about-section__title">
-            Traditional roots.
-            <br />
-            Modern lift.
+            {headingLines.map((line, index) => (
+              <span key={`${line}-${index}`}>
+                {line}
+                {index < headingLines.length - 1 ? <br /> : null}
+              </span>
+            ))}
           </h2>
-          <p className="about-section__text">
-            Skara is a four-piece ceilidh line-up blending fiddle, pipes, guitar and drums
-            into a polished live sound that keeps dance floors moving.
-          </p>
+          <p className="about-section__text">{about.text}</p>
         </div>
 
         <div className="about-section__media">
