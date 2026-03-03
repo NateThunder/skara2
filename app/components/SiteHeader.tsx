@@ -123,7 +123,7 @@ export default function SiteHeader() {
 
   useEffect(() => {
     const onResize = () => {
-      if (window.innerWidth >= 1280) {
+      if (window.innerWidth >= 761) {
         setIsMenuOpen(false);
       }
     };
@@ -286,4 +286,3 @@ export default function SiteHeader() {
     </header>
   );
 }
-
