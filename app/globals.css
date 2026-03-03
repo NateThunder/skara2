@@ -970,7 +970,7 @@ body {
 .bookingForm {
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 18px;
-  background: rgba(239, 244, 252, 0.92);
+  background: rgba(220, 231, 247, 0.94);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
   overflow: hidden;
 }
@@ -990,7 +990,7 @@ body {
   border-bottom: 1px solid rgba(39, 58, 87, 0.16);
   background: linear-gradient(
     to right,
-    rgba(11, 18, 32, 0.03),
+    rgba(27, 54, 92, 0.1),
     rgba(203, 164, 84, 0.14)
   );
 }
@@ -1039,7 +1039,7 @@ body {
   padding: 10px 12px;
   border-radius: 999px;
   border: 1px solid rgba(11, 18, 32, 0.14);
-  background: rgba(255, 255, 255, 0.66);
+  background: rgba(229, 237, 250, 0.88);
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1051,7 +1051,7 @@ body {
 .calNavBtn:hover {
   transform: translateY(-1px);
   border-color: rgba(11, 18, 32, 0.24);
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(238, 244, 253, 0.98);
 }
 
 .months {
@@ -1114,7 +1114,7 @@ body {
   min-height: 44px;
   border-radius: 12px;
   border: 1px solid rgba(11, 18, 32, 0.12);
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(232, 240, 252, 0.9);
   color: rgba(11, 18, 32, 0.95);
   font-weight: 800;
   cursor: pointer;
@@ -1220,7 +1220,7 @@ body {
   border-radius: 14px;
   padding: 12px;
   font-size: 14px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(233, 241, 252, 0.9);
   color: rgba(11, 18, 32, 0.96);
 }
 
