@@ -2100,17 +2100,28 @@ body {
 .dash-sidebar {
   border-right: 1px solid rgba(216, 226, 239, 0.86);
   background: rgba(255, 255, 255, 0.92);
-  padding: 26px 18px;
+  padding: 12px 10px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 6px;
 }
 
 .dash-sidebar__brand {
   border: 1px solid var(--dash-border);
   border-radius: 16px;
-  padding: 15px;
+  padding: 8px 9px;
   background: linear-gradient(180deg, #ffffff 0%, #f5f9ff 100%);
+}
+
+.dash-sidebar__brand-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.dash-sidebar__brand-copy {
+  min-width: 0;
 }
 
 .dash-sidebar__eyebrow {
@@ -2119,10 +2130,11 @@ body {
   text-transform: uppercase;
   color: var(--dash-muted);
   font-weight: 700;
+  line-height: 1.05;
 }
 
 .dash-sidebar__title {
-  margin-top: 9px;
+  margin-top: 1px;
   font-size: 23px;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -2131,15 +2143,103 @@ body {
 }
 
 .dash-sidebar__nav {
-  display: grid;
+  display: none;
   gap: 7px;
 }
 
-.dash-sidebar__link,
-.dash-sidebar__site-link {
+.dash-sidebar__toggle {
+  display: inline-flex;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  border: 1px solid var(--dash-border);
   border-radius: 10px;
-  border: 1px solid transparent;
-  padding: 10px 11px;
+  background: #ffffff;
+  color: var(--dash-text);
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.dash-sidebar__toggle-icon {
+  width: 17px;
+  display: grid;
+  gap: 3px;
+}
+
+.dash-sidebar__toggle-icon span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform-origin: center;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.dash-sidebar__toggle.is-open .dash-sidebar__toggle-icon span:nth-child(1) {
+  transform: translateY(5px) rotate(45deg);
+}
+
+.dash-sidebar__toggle.is-open .dash-sidebar__toggle-icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.dash-sidebar__toggle.is-open .dash-sidebar__toggle-icon span:nth-child(3) {
+  transform: translateY(-5px) rotate(-45deg);
+}
+
+.dash-sidebar__drawer-wrap {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+}
+
+.dash-sidebar__drawer-backdrop {
+  display: block;
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(10, 22, 39, 0.46);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.dash-sidebar__drawer {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  grid-auto-rows: max-content;
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: min(82vw, 240px);
+  padding: 10px 9px;
+  background: #ffffff;
+  border-right: 1px solid #dbe6f2;
+  box-shadow: 0 24px 50px rgba(19, 35, 55, 0.24);
+  transform: translateX(-101%);
+  transition: transform 180ms ease;
+}
+
+.dash-sidebar__drawer-wrap.is-open {
+  pointer-events: auto;
+}
+
+.dash-sidebar__drawer-wrap.is-open .dash-sidebar__drawer-backdrop {
+  opacity: 1;
+}
+
+.dash-sidebar__drawer-wrap.is-open .dash-sidebar__drawer {
+  transform: translateX(0);
+}
+
+.dash-sidebar__link {
+  border-radius: 6px;
+  border: none;
+  padding: 6px 4px;
   text-decoration: none;
   color: var(--dash-text);
   font-size: 13px;
@@ -2147,15 +2247,9 @@ body {
   transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
 }
 
-.dash-sidebar__link:hover,
-.dash-sidebar__site-link:hover {
-  background: var(--dash-accent-soft);
-  border-color: #c7ddff;
+.dash-sidebar__link:hover {
+  background: rgba(21, 115, 255, 0.08);
   color: #0f4fae;
-}
-
-.dash-sidebar__footer {
-  margin-top: auto;
 }
 
 .dash-header__grid {
@@ -2899,7 +2993,7 @@ body {
 }
 
 .dash-sidebar__link:focus-visible,
-.dash-sidebar__site-link:focus-visible,
+.dash-sidebar__toggle:focus-visible,
 .dash-range__preset:focus-visible,
 .dash-btn:focus-visible,
 .dash-range__custom input:focus-visible,
@@ -3003,7 +3097,12 @@ body {
   .dash-range__preset,
   .dash-btn,
   .dash-sidebar__link,
-  .dash-sidebar__site-link {
+  .dash-sidebar__toggle-icon span {
+    transition: none;
+  }
+
+  .dash-sidebar__drawer-backdrop,
+  .dash-sidebar__drawer {
     transition: none;
   }
 }
