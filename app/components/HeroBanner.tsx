@@ -13,11 +13,11 @@ export default function HeroBanner() {
       return;
     }
 
-    const nextMuted = !isMuted;
+    const nextMuted = !video.muted;
     video.muted = nextMuted;
     setIsMuted(nextMuted);
 
-    if (!nextMuted) {
+    if (!nextMuted && video.paused) {
       void video.play().catch(() => {
         video.muted = true;
         setIsMuted(true);
@@ -37,11 +37,7 @@ export default function HeroBanner() {
         playsInline
         preload="metadata"
       />
-      <div className="pointer-events-none absolute inset-0 bg-black/40" aria-hidden="true" />
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-black/35 to-black/25"
-        aria-hidden="true"
-      />
+      <div className="hero-scrim pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] items-center px-6 pt-14 md:px-12 md:pt-16 lg:pt-20">
         <div className="hero-content pointer-events-auto max-w-[760px]">
@@ -82,6 +78,7 @@ export default function HeroBanner() {
       <button
         type="button"
         className="hero-sound-toggle"
+        data-track-ignore="true"
         aria-pressed={!isMuted}
         aria-label={isMuted ? "Unmute banner video" : "Mute banner video"}
         onClick={toggleMuted}

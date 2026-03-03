@@ -8,7 +8,7 @@ const navItems = [
   { label: "About", href: "#about" },
   { label: "Media", href: "#watch" },
   { label: "Mentions", href: "#mentions" },
-  { label: "Contact", href: "#bookings" },
+  { label: "Contact", href: "#contact" },
 ];
 const fadeRange = 120;
 

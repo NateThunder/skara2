@@ -80,6 +80,18 @@ body {
   object-fit: cover;
   object-position: center;
   transform: scale(1.58);
+  filter: contrast(1.05) saturate(1.05);
+}
+
+.hero-scrim {
+  background:
+    radial-gradient(
+      1200px 560px at 20% 35%,
+      rgba(0, 0, 0, 0.18),
+      rgba(0, 0, 0, 0.55)
+    ),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.2) 44%),
+    linear-gradient(to top, rgba(0, 0, 0, 0.76), rgba(0, 0, 0, 0) 46%);
 }
 
 @media (min-width: 768px) {
