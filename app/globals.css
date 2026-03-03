@@ -24,7 +24,8 @@
 
 html,
 body {
-  overscroll-behavior: none;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: auto;
 }
 
 html {
@@ -572,6 +573,26 @@ body {
   transition: transform 300ms ease;
 }
 
+.site-nav__mobile-close {
+  position: absolute;
+  top: calc(24px + env(safe-area-inset-top, 0px));
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(196, 214, 240, 0.45);
+  border-radius: 8px;
+  background: rgba(8, 27, 49, 0.55);
+  color: rgba(232, 241, 255, 0.92);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.site-nav__mobile-close:hover {
+  background: rgba(14, 40, 68, 0.75);
+}
+
 .site-nav__mobile.is-open {
   transform: translateX(0);
 }
@@ -588,15 +609,19 @@ body {
 
 .site-nav__mobile-cta {
   margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-size: 0.75rem;
   font-weight: 700;
   color: #0a0a0a;
   background: #cba454;
-  padding: 10px 22px;
+  padding: 10px 24px;
   border-radius: 999px;
   justify-self: start;
+  text-align: center;
 }
 
 @media (min-width: 1280px) {
@@ -2023,7 +2048,7 @@ body {
 }
 
 .dash-page {
-  --dash-bg: #f4f7fb;
+  --dash-bg: var(--background);
   --dash-surface: #ffffff;
   --dash-surface-soft: #f8fbff;
   --dash-border: #d8e2ef;

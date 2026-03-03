@@ -26,7 +26,7 @@ export default function HeroBanner() {
   };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden" aria-label="Hero banner video">
+    <section className="relative h-[100svh] w-full overflow-hidden md:h-screen" aria-label="Hero banner video">
       <video
         ref={videoRef}
         className="hero-video absolute inset-0"
