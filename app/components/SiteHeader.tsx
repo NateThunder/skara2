@@ -8,7 +8,7 @@ const navItems = [
   { label: "About", href: "#about" },
   { label: "Media", href: "#watch" },
   { label: "Mentions", href: "#mentions" },
-  { label: "Contact", href: "#bookings" },
+  { label: "Contact", href: "#contact" },
 ];
 const fadeRange = 120;
 
@@ -123,7 +123,7 @@ export default function SiteHeader() {
 
   useEffect(() => {
     const onResize = () => {
-      if (window.innerWidth >= 1280) {
+      if (window.innerWidth >= 761) {
         setIsMenuOpen(false);
       }
     };
@@ -286,4 +286,3 @@ export default function SiteHeader() {
     </header>
   );
 }
-

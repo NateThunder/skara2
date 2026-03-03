@@ -71,7 +71,7 @@ export default async function Home() {
 
         <BookingsSection />
       </main>
-      <footer className="border-t border-white/20 px-6 py-10 text-center sm:px-10">
+      <footer id="contact" className="border-t border-white/20 px-6 py-10 text-center sm:px-10">
         <p className="text-xs uppercase tracking-[0.3em] text-white/65">Contact</p>
         <p className="mt-3 text-2xl font-semibold text-white">Skara Ceilidh Band</p>
         <p className="mt-3 text-white/80">

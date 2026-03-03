@@ -70,6 +70,11 @@ export default function ButtonClickTracker() {
         return;
       }
 
+      const ignored = target.closest("[data-track-ignore='true']");
+      if (ignored) {
+        return;
+      }
+
       const tracked = target.closest("button, a[data-track-button='true']");
       if (!(tracked instanceof HTMLElement)) {
         return;
