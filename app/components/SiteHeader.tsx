@@ -14,6 +14,7 @@ const fadeRange = 120;
 
 export default function SiteHeader() {
   const headerRef = useRef<HTMLElement | null>(null);
+  const mobileMenuRef = useRef<HTMLElement | null>(null);
   const frameRef = useRef<number | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const previousStyles = useRef<{
@@ -146,6 +147,29 @@ export default function SiteHeader() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    if (!isMenuOpen) {
+      return;
+    }
+
+    const onPointerDown = (event: PointerEvent) => {
+      const menu = mobileMenuRef.current;
+      const target = event.target;
+      if (!menu || !(target instanceof Node)) {
+        return;
+      }
+
+      if (!menu.contains(target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [isMenuOpen]);
+
   const handleMobileLinkClick = (href: string) => {
     setIsMenuOpen(false);
 
@@ -223,10 +247,19 @@ export default function SiteHeader() {
         <div className="site-nav__drawer-backdrop" />
         <nav
           id="mobile-menu"
+          ref={mobileMenuRef}
           aria-label="Mobile"
           className={`site-nav__mobile ${isMenuOpen ? "is-open" : ""}`}
           onClick={(event) => event.stopPropagation()}
         >
+          <button
+            type="button"
+            className="site-nav__mobile-close"
+            aria-label="Close menu"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            x
+          </button>
           {navItems.map((item) => (
             <a
               key={item.label}
@@ -239,16 +272,16 @@ export default function SiteHeader() {
               {item.label}
             </a>
           ))}
-        <a
-          href="#bookings"
-          className="site-nav__mobile-cta"
-          data-track-button="true"
-          data-track-label="Book Now"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          Book Now
-        </a>
-      </nav>
+          <a
+            href="#bookings"
+            className="site-nav__mobile-cta"
+            data-track-button="true"
+            data-track-label="Book Now"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Book Now
+          </a>
+        </nav>
       </div>
     </header>
   );
