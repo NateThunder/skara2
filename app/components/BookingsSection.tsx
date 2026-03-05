@@ -81,6 +81,7 @@ export default function BookingsSection() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [eventType, setEventType] = useState("");
   const [location, setLocation] = useState("");
   const [message, setMessage] = useState("");
@@ -134,6 +135,7 @@ export default function BookingsSection() {
       "form-name": FORM_NAME,
       name: name.trim(),
       email: email.trim(),
+      phone: phone.trim(),
       date: selectedISO,
       eventType: eventType.trim(),
       location: location.trim(),
@@ -156,6 +158,7 @@ export default function BookingsSection() {
       setNotice("Thanks. Your booking enquiry has been sent.");
       setName("");
       setEmail("");
+      setPhone("");
       setEventType("");
       setLocation("");
       setMessage("");
@@ -343,6 +346,19 @@ export default function BookingsSection() {
                   autoComplete="email"
                   placeholder="you@email.com"
                   required
+                />
+              </label>
+
+              <label className="field">
+                <span className="fieldLabel">Phone (optional)</span>
+                <input
+                  className="input"
+                  name="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  autoComplete="tel"
+                  placeholder="+44 7..."
                 />
               </label>
 

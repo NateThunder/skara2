@@ -219,7 +219,14 @@ export async function createGa4Client(): Promise<
     );
   }
 
-  const credentials = await resolveGoogleCredentials();
+  let credentials: ResolvedGoogleCredentials | null = null;
+  try {
+    credentials = await resolveGoogleCredentials();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unable to read GA4 credentials.";
+    return createConfigurationError(`GA4 credentials could not be loaded. ${message}`);
+  }
+
   if (!credentials) {
     return createConfigurationError(
       "GA4 credentials are missing. Configure GOOGLE_APPLICATION_CREDENTIALS or GOOGLE_CLIENT_EMAIL + GOOGLE_PRIVATE_KEY."
