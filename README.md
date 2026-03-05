@@ -185,3 +185,23 @@ npm run dev
 ```
 
 Open `http://localhost:3000/admin`.
+
+## Supabase Login (Admin Protection)
+
+This project now protects:
+
+- `/admin`
+- `/api/admin/*`
+
+Unauthenticated users are redirected to `/login` (or receive `401` for admin APIs).
+
+Add these environment variables:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=YOUR_SUPABASE_ANON_KEY
+```
+
+Create at least one user in Supabase Authentication (email/password), then sign in at:
+
+- `http://localhost:3000/login`

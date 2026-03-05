@@ -113,6 +113,20 @@ export function clearAnalyticsClientCache(): void {
   clientCache.clear();
 }
 
+function parseResponseBody(
+  responseText: string
+): WidgetResponse<unknown> | null {
+  if (!responseText.trim()) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(responseText) as WidgetResponse<unknown>;
+  } catch {
+    return null;
+  }
+}
+
 export function useAnalyticsWidget<TData>(
   endpoint: string,
   range: DateRangeInput,
@@ -144,16 +158,24 @@ export function useAnalyticsWidget<TData>(
 
     fetch(cacheKey, { cache: "no-store", signal: controller.signal })
       .then(async (response) => {
-        const payload = (await response.json()) as WidgetResponse<TData>;
-        if (!response.ok && payload.configured) {
+        const responseText = await response.text();
+        const parsed = parseResponseBody(responseText) as WidgetResponse<TData> | null;
+
+        if (!parsed) {
+          const summary = responseText.trim();
+          const details = summary ? ` ${summary.slice(0, 240)}` : "";
+          throw new Error(`Analytics API ${response.status} ${response.statusText}.${details}`);
+        }
+
+        if (!response.ok && parsed.configured) {
           throw new Error("Unexpected analytics response shape.");
         }
 
-        clientCache.set(cacheKey, payload as WidgetResponse<unknown>);
+        clientCache.set(cacheKey, parsed as WidgetResponse<unknown>);
         if (isActive) {
           setRequestState({
             key: cacheKey,
-            response: payload,
+            response: parsed,
             error: null,
           });
         }
