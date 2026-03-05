@@ -4,14 +4,14 @@ import type { AcquisitionWidgetData } from "@/app/lib/analytics/contracts";
 import { WidgetPanel } from "@/app/admin/components/WidgetPanel";
 
 const donutColors = [
-  "#3b82f6",
-  "#0ea5a3",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-  "#22c55e",
-  "#f97316",
-  "#64748b",
+  "#0f9f8f",
+  "#14b08a",
+  "#4ecdc4",
+  "#2f80ed",
+  "#5cc98a",
+  "#f4b04f",
+  "#f97363",
+  "#5f7f7a",
 ];
 
 type AcquisitionDonutChartProps = {

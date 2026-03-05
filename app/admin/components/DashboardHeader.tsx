@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminSignOutButton } from "@/app/admin/components/AdminSignOutButton";
 import type { DashboardDateRange } from "@/app/admin/lib/use-analytics-widget";
 import type { DateRangePreset } from "@/app/lib/analytics/contracts";
 
@@ -89,6 +90,7 @@ export function DashboardHeader({
             </svg>
             <span>Back to Website</span>
           </Link>
+          <AdminSignOutButton />
         </div>
 
         <div className="dash-range" role="group" aria-label="Select date range">
