@@ -19,6 +19,8 @@ type DashboardHeaderProps = {
   loading: boolean;
   customError: string | null;
   activeRangeLabel: string;
+  isFullNavEnabled: boolean;
+  onNavLayoutChange: (next: "full" | "hamburger") => void;
 };
 
 export function DashboardHeader({
@@ -30,6 +32,8 @@ export function DashboardHeader({
   loading,
   customError,
   activeRangeLabel,
+  isFullNavEnabled,
+  onNavLayoutChange,
 }: DashboardHeaderProps) {
   return (
     <div className="dash-header__grid">
@@ -42,6 +46,20 @@ export function DashboardHeader({
 
       <div className="dash-header__actions">
         <div className="dash-header__quick-actions">
+          <button
+            type="button"
+            className={`dash-btn ${isFullNavEnabled ? "dash-btn--primary" : "dash-btn--ghost"}`}
+            onClick={() => onNavLayoutChange("full")}
+          >
+            Normal nav bar
+          </button>
+          <button
+            type="button"
+            className={`dash-btn ${isFullNavEnabled ? "dash-btn--ghost" : "dash-btn--primary"}`}
+            onClick={() => onNavLayoutChange("hamburger")}
+          >
+            Hamburger only
+          </button>
           <button
             type="button"
             className="dash-btn dash-btn--ghost"

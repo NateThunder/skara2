@@ -33,8 +33,8 @@ export function LandingPagesTable({ state }: LandingPagesTableProps) {
             {rows.map((row, index) => (
               <tr key={`${row.target}-${row.clicks}-${index}`}>
                 <th scope="row">{row.target}</th>
-                <td>{formatInteger(row.clicks)}</td>
-                <td>{formatInteger(row.users)}</td>
+                <td data-label="Clicks">{formatInteger(row.clicks)}</td>
+                <td data-label="Users">{formatInteger(row.users)}</td>
               </tr>
             ))}
           </tbody>

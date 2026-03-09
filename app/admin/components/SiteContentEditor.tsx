@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Mention, SiteContent } from "@/app/lib/site-content";
 
 const emptySiteContent: SiteContent = {
@@ -10,6 +11,7 @@ const emptySiteContent: SiteContent = {
     text: "",
   },
   mentions: [],
+  navLayoutMode: "hamburger",
   updatedAt: "",
 };
 
@@ -23,6 +25,7 @@ function createMention(): Mention {
 }
 
 export function SiteContentEditor() {
+  const router = useRouter();
   const [content, setContent] = useState<SiteContent>(emptySiteContent);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -38,6 +41,11 @@ export function SiteContentEditor() {
       const response = await fetch("/api/admin/content", { cache: "no-store" });
       const json = (await response.json()) as { content?: SiteContent; error?: string };
 
+      if (response.status === 401) {
+        router.push("/login?redirectTo=/admin&error=session-expired");
+        return;
+      }
+
       if (!response.ok || !json.content) {
         throw new Error(json.error ?? "Failed to load editable content.");
       }
@@ -49,7 +57,7 @@ export function SiteContentEditor() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     void loadContent();
@@ -69,6 +77,12 @@ export function SiteContentEditor() {
       });
 
       const json = (await response.json()) as { content?: SiteContent; error?: string };
+
+      if (response.status === 401) {
+        router.push("/login?redirectTo=/admin&error=session-expired");
+        return;
+      }
+
       if (!response.ok || !json.content) {
         throw new Error(json.error ?? "Failed to save changes.");
       }
@@ -95,7 +109,7 @@ export function SiteContentEditor() {
   const addMention = () => {
     setContent((current) => ({
       ...current,
-      mentions: [...current.mentions, createMention()],
+      mentions: [createMention(), ...current.mentions],
     }));
   };
 

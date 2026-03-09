@@ -1,0 +1,29 @@
+
+> sakra2@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.53:3000
+- Environments: .env.local
+
+✓ Starting...
+Creating turbopack project { dir: 'E:\\Websites\\Demo Websites\\sakra2', testMode: true }
+✓ Ready in 3.9s
+○ Compiling / ...
+ GET / 200 in 5.8s (compile: 4.8s, render: 984ms)
+ GET / 200 in 809ms (compile: 25ms, render: 784ms)
+ GET / 200 in 444ms (compile: 7ms, render: 436ms)
+ GET /admin 200 in 1621ms (compile: 776ms, proxy.ts: 599ms, render: 245ms)
+ GET /api/admin/content 200 in 1126ms (compile: 730ms, proxy.ts: 86ms, render: 310ms)
+ GET /api/admin/analytics/acquisition?preset=28d 200 in 1782ms (compile: 824ms, proxy.ts: 157ms, render: 802ms)
+ GET /api/admin/analytics/landing-pages?preset=28d 200 in 1815ms (compile: 883ms, proxy.ts: 200ms, render: 731ms)
+ GET /api/admin/analytics/top-pages?preset=28d 200 in 1841ms (compile: 827ms, proxy.ts: 206ms, render: 809ms)
+ GET /api/admin/analytics/kpis?preset=28d 200 in 2000ms (compile: 729ms, proxy.ts: 145ms, render: 1126ms)
+ GET /api/admin/analytics/timeseries?preset=28d 200 in 2.2s (compile: 797ms, proxy.ts: 149ms, render: 1237ms)
+ GET /api/admin/nav-layout 200 in 421ms (compile: 246ms, proxy.ts: 76ms, render: 99ms)
+ GET /api/admin/analytics/top-clicks?preset=28d 200 in 753ms (compile: 229ms, proxy.ts: 68ms, render: 456ms)
+ GET /api/admin/analytics/campaigns?preset=28d 200 in 1617ms (compile: 113ms, proxy.ts: 77ms, render: 1427ms)
+ GET / 200 in 982ms (compile: 177ms, render: 806ms)
+ GET / 200 in 944ms (compile: 3ms, render: 941ms)
+^C

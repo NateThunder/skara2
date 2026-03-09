@@ -1,0 +1,13 @@
+
+> sakra2@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.53:3000
+- Environments: .env.local
+
+✓ Starting...
+Creating turbopack project { dir: 'E:\\Websites\\Demo Websites\\sakra2', testMode: true }
+✓ Ready in 1478ms
+ GET / 200 in 1470ms (compile: 1046ms, render: 424ms)

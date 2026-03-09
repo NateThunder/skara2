@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import type { NavLayoutMode } from "@/app/lib/site-content";
 
 const navItems = [
   { label: "Home", href: "#top" },
@@ -12,11 +13,17 @@ const navItems = [
 ];
 const fadeRange = 120;
 
-export default function SiteHeader() {
+type SiteHeaderProps = {
+  defaultNavLayoutMode?: NavLayoutMode;
+};
+
+export default function SiteHeader({ defaultNavLayoutMode = "hamburger" }: SiteHeaderProps) {
   const headerRef = useRef<HTMLElement | null>(null);
   const mobileMenuRef = useRef<HTMLElement | null>(null);
   const frameRef = useRef<number | null>(null);
+  const [isDesktopNavEnabled, setIsDesktopNavEnabled] = useState(defaultNavLayoutMode === "full");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const lockedScrollY = useRef(0);
   const previousStyles = useRef<{
     bodyPosition: string;
     bodyTop: string;
@@ -79,7 +86,6 @@ export default function SiteHeader() {
         return;
       }
 
-      const top = body.style.top;
       body.style.position = previousStyles.current.bodyPosition;
       body.style.top = previousStyles.current.bodyTop;
       body.style.left = previousStyles.current.bodyLeft;
@@ -89,12 +95,17 @@ export default function SiteHeader() {
       html.style.overflow = previousStyles.current.htmlOverflow;
       previousStyles.current = null;
 
-      const y = top ? -parseInt(top, 10) : 0;
+      const y = lockedScrollY.current;
+      const previousInlineScrollBehavior = html.style.scrollBehavior;
+      html.style.scrollBehavior = "auto";
       window.scrollTo(0, y);
+      html.style.scrollBehavior = previousInlineScrollBehavior;
+      lockedScrollY.current = 0;
     };
 
     if (isMenuOpen) {
       const scrollY = window.scrollY;
+      lockedScrollY.current = scrollY;
       previousStyles.current = {
         bodyPosition: body.style.position,
         bodyTop: body.style.top,
@@ -120,17 +131,6 @@ export default function SiteHeader() {
 
     restoreBodyScroll();
   }, [isMenuOpen]);
-
-  useEffect(() => {
-    const onResize = () => {
-      if (window.innerWidth >= 761) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
 
   useEffect(() => {
     if (!isMenuOpen) {
@@ -170,6 +170,18 @@ export default function SiteHeader() {
     };
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    setIsDesktopNavEnabled(defaultNavLayoutMode === "full");
+  }, [defaultNavLayoutMode]);
+
+  useEffect(() => {
+    if (!isDesktopNavEnabled) {
+      return;
+    }
+
+    setIsMenuOpen(false);
+  }, [isDesktopNavEnabled]);
+
   const handleMobileLinkClick = (href: string) => {
     setIsMenuOpen(false);
 
@@ -183,7 +195,10 @@ export default function SiteHeader() {
   };
 
   return (
-    <header ref={headerRef} className="site-header">
+    <header
+      ref={headerRef}
+      className={`site-header ${isDesktopNavEnabled ? "site-header--desktop-nav" : "site-header--hamburger-only"}`}
+    >
       <div className="site-header__inner">
         <a href="#top" aria-label="Skara Home" className="site-header__logo">
           <Image

@@ -1,42 +1,20 @@
-"use client";
-
 import Image from "next/image";
-import { useRef, useState } from "react";
 
 export default function HeroBanner() {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
-
-  const toggleMuted = () => {
-    const video = videoRef.current;
-    if (!video) {
-      return;
-    }
-
-    const nextMuted = !video.muted;
-    video.muted = nextMuted;
-    setIsMuted(nextMuted);
-
-    if (!nextMuted && video.paused) {
-      void video.play().catch(() => {
-        video.muted = true;
-        setIsMuted(true);
-      });
-    }
-  };
-
   return (
     <section className="relative h-[100svh] w-full overflow-hidden md:h-screen" aria-label="Hero banner video">
       <video
-        ref={videoRef}
         className="hero-video absolute inset-0"
-        src="/hero-strip-the-willow.mp4"
         autoPlay
         loop
         muted
         playsInline
         preload="metadata"
-      />
+        poster="/thumbnail.png"
+      >
+        <source media="(min-width: 768px)" src="/hero-strip-the-willow-1080p.mp4" type="video/mp4" />
+        <source src="/hero-strip-the-willow-720p.mp4" type="video/mp4" />
+      </video>
       <div className="hero-scrim pointer-events-none absolute inset-0" aria-hidden="true" />
 
       <div className="relative z-10 mx-auto flex h-full w-full max-w-[1400px] items-center px-6 pt-14 md:px-12 md:pt-16 lg:pt-20">
@@ -74,43 +52,6 @@ export default function HeroBanner() {
           <p className="hero-instruments">Fiddle . Pipes . Guitar . Drums</p>
         </div>
       </div>
-
-      <button
-        type="button"
-        className="hero-sound-toggle"
-        data-track-ignore="true"
-        aria-pressed={!isMuted}
-        aria-label={isMuted ? "Unmute banner video" : "Mute banner video"}
-        onClick={toggleMuted}
-      >
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          className="hero-sound-toggle__icon"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M11 8L8.7 10H6V14H8.7L11 16V8Z"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          {isMuted ? (
-            <>
-              <path d="M15 10.5L19 14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              <path d="M19 10.5L15 14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </>
-          ) : (
-            <>
-              <path d="M15 10C16 10.8 16 13.2 15 14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              <path d="M17.8 8.8C19.8 10.6 19.8 13.4 17.8 15.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-            </>
-          )}
-        </svg>
-        <span>{isMuted ? "Sound Off" : "Sound On"}</span>
-      </button>
     </section>
   );
 }

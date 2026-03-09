@@ -5,8 +5,11 @@ import WatchSection from "./components/WatchSection";
 import WhySkaraSection from "./components/WhySkaraSection";
 import MentionsSection from "./components/MentionsSection";
 import BookingsSection from "./components/BookingsSection";
+import CookieSettingsLink from "./components/CookieSettingsLink";
 import SectionDivider from "./components/SectionDivider";
 import { getSiteContent } from "./lib/site-content";
+
+export const dynamic = "force-dynamic";
 
 const socialLinks = [
   {
@@ -52,7 +55,7 @@ export default async function Home() {
 
   return (
     <div id="top" className="min-h-screen bg-[#061a2b] text-white">
-      <SiteHeader />
+      <SiteHeader defaultNavLayoutMode={siteContent.navLayoutMode} />
       <main className="flex w-full flex-1 flex-col">
         <HeroBanner />
         <SectionDivider className="py-6 md:py-8" />
@@ -80,6 +83,7 @@ export default async function Home() {
             info@skaraceilidh.com
           </a>
         </p>
+        <CookieSettingsLink />
         <div className="mt-6 flex items-center justify-center gap-3">
           {socialLinks.map((social) => (
             <a

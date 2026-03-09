@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AcquisitionDonutChart } from "@/app/admin/components/AcquisitionDonutChart";
 import { CampaignsTable } from "@/app/admin/components/CampaignsTable";
 import { DashboardHeader } from "@/app/admin/components/DashboardHeader";
@@ -28,6 +28,7 @@ import type {
   TopClicksWidgetData,
   TopPagesWidgetData,
 } from "@/app/lib/analytics/contracts";
+import type { NavLayoutMode } from "@/app/lib/site-content";
 
 function dateToIso(date: Date): string {
   return date.toISOString().slice(0, 10);
@@ -83,6 +84,7 @@ export default function AdminPage() {
 
   const [refreshNonce, setRefreshNonce] = useState(0);
   const [customError, setCustomError] = useState<string | null>(null);
+  const [navLayoutMode, setNavLayoutMode] = useState<NavLayoutMode>("hamburger");
   const [controls, setControls] = useState<DashboardDateRange>({
     preset: "28d",
     startDate: customDefaults.startDate,
@@ -145,6 +147,33 @@ export default function AdminPage() {
 
   const configurationError = allStates.find((state) => !state.loading && !state.configured)?.error;
 
+  useEffect(() => {
+    let active = true;
+
+    const loadNavLayoutMode = async () => {
+      try {
+        const response = await fetch("/api/admin/nav-layout", { cache: "no-store" });
+        const json = (await response.json()) as { mode?: string; error?: string };
+
+        if (!response.ok) {
+          throw new Error(json.error ?? "Failed to load navigation mode.");
+        }
+
+        if (active && (json.mode === "full" || json.mode === "hamburger")) {
+          setNavLayoutMode(json.mode);
+        }
+      } catch (error) {
+        console.error("Failed to load global nav layout mode:", error);
+      }
+    };
+
+    void loadNavLayoutMode();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const applyPreset = (preset: DateRangePreset) => {
     setControls((current) => ({ ...current, preset }));
     setCustomError(null);
@@ -191,6 +220,37 @@ export default function AdminPage() {
     setRefreshNonce((value) => value + 1);
   };
 
+  const handleNavLayoutChange = (nextMode: NavLayoutMode) => {
+    if (nextMode === navLayoutMode) {
+      return;
+    }
+
+    const previousMode = navLayoutMode;
+    setNavLayoutMode(nextMode);
+
+    void (async () => {
+      try {
+        const response = await fetch("/api/admin/nav-layout", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ mode: nextMode }),
+        });
+        const json = (await response.json()) as { mode?: string; error?: string };
+
+        if (!response.ok || (json.mode !== "full" && json.mode !== "hamburger")) {
+          throw new Error(json.error ?? "Failed to update navigation mode.");
+        }
+
+        setNavLayoutMode(json.mode);
+      } catch (error) {
+        console.error("Failed to save global nav layout mode:", error);
+        setNavLayoutMode(previousMode);
+      }
+    })();
+  };
+
   const setupExamples = [
     { id: "kpis", title: "KPI cards", payloads: kpiState.examplePayloads },
     { id: "timeseries", title: "Users and sessions trend", payloads: trendState.examplePayloads },
@@ -228,6 +288,8 @@ export default function AdminPage() {
             loading={isLoadingAny}
             customError={customError}
             activeRangeLabel={activeRangeLabel}
+            isFullNavEnabled={navLayoutMode === "full"}
+            onNavLayoutChange={handleNavLayoutChange}
           />
         }
       >

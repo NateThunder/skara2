@@ -34,6 +34,19 @@ export function SidebarNav() {
     };
   }, [mobileOpen]);
 
+  useEffect(() => {
+    if (!mobileOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileOpen]);
+
   return (
     <aside className="dash-sidebar" aria-label="Dashboard navigation">
       <div className="dash-sidebar__brand">

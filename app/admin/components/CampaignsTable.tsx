@@ -34,9 +34,9 @@ export function CampaignsTable({ state }: CampaignsTableProps) {
             {rows.map((row) => (
               <tr key={`${row.campaign}-${row.sessions}`}>
                 <th scope="row">{row.campaign}</th>
-                <td>{formatInteger(row.users)}</td>
-                <td>{formatInteger(row.sessions)}</td>
-                <td>{formatInteger(row.conversions)}</td>
+                <td data-label="Users">{formatInteger(row.users)}</td>
+                <td data-label="Sessions">{formatInteger(row.sessions)}</td>
+                <td data-label="Conversions">{formatInteger(row.conversions)}</td>
               </tr>
             ))}
           </tbody>

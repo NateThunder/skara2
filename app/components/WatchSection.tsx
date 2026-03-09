@@ -1,4 +1,4 @@
-import WatchVideoCard from "./WatchVideoCard";
+import WatchVideoGrid from "./WatchVideoGrid";
 
 type YouTubeVideo = {
   id: string;
@@ -122,11 +122,7 @@ export default async function WatchSection() {
         </p>
 
         {videos.length > 0 ? (
-          <div className="watch-grid">
-            {videos.map((video) => (
-              <WatchVideoCard key={video.id} videoId={video.id} title={video.title} />
-            ))}
-          </div>
+          <WatchVideoGrid videos={videos} />
         ) : (
           <p className="watch-section__empty">
             Videos are temporarily unavailable. Check the YouTube channel directly for the latest
