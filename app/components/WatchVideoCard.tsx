@@ -28,6 +28,9 @@ type YouTubeNamespace = {
     options: {
       videoId: string;
       playerVars?: Record<string, string | number>;
+      events?: {
+        onReady?: (event: { target: YouTubePlayer }) => void;
+      };
     }
   ) => YouTubePlayer;
 };
@@ -207,32 +210,33 @@ export default function WatchVideoCard({
             playsinline: 1,
             start: Math.max(0, Math.floor(resumeAtSeconds)),
           },
+          events: {
+            onReady: ({ target }) => {
+              if (cancelled || inlinePlayerRef.current !== target) {
+                return;
+              }
+
+              const time = Math.max(0, Math.floor(resumeAtSeconds));
+              target.seekTo(time, true);
+
+              if (inlineAutoplay) {
+                if (!inlineMuted) {
+                  target.unMute();
+                }
+                target.playVideo();
+                return;
+              }
+
+              target.pauseVideo();
+              if (inlineMuted) {
+                target.mute();
+              } else {
+                target.unMute();
+              }
+            },
+          },
         });
         inlinePlayerRef.current = inlinePlayer;
-
-        window.setTimeout(() => {
-          if (cancelled || inlinePlayerRef.current !== inlinePlayer) {
-            return;
-          }
-
-          const time = Math.max(0, Math.floor(resumeAtSeconds));
-          inlinePlayer.seekTo(time, true);
-
-          if (inlineAutoplay) {
-            if (!inlineMuted) {
-              inlinePlayer.unMute();
-            }
-            inlinePlayer.playVideo();
-            return;
-          }
-
-          inlinePlayer.pauseVideo();
-          if (inlineMuted) {
-            inlinePlayer.mute();
-          } else {
-            inlinePlayer.unMute();
-          }
-        }, 250);
       } catch {
         setIsPlayingInline(false);
       }
