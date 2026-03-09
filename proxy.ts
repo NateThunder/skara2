@@ -71,6 +71,15 @@ function clearLastActivityCookie(response: NextResponse, request: NextRequest) {
   });
 }
 
+export const proxyTestUtils = {
+  ADMIN_IDLE_COOKIE,
+  ADMIN_IDLE_TIMEOUT_MS,
+  isAdminPath,
+  isAdminApiPath,
+  readLastActivityMs,
+  isIdleExpired,
+};
+
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const adminPath = isAdminPath(pathname);
