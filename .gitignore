@@ -23,6 +23,19 @@
 # misc
 .DS_Store
 *.pem
+/spares/
+/public/_video_backups/
+/public/*.trimmed.mp4
+/public/*.optimized.mp4
+/public/*.compressed.mp4
+/public/*-trimmed.mp4
+/public/*-optimized.mp4
+/public/*-compressed.mp4
+/public/*.original.*.mp4
+/public/*.backup.*.mp4
+/public/*-backup.*.mp4
+/public/*.spare.*.mp4
+/public/*-spare.*.mp4
 
 # debug
 npm-debug.log*

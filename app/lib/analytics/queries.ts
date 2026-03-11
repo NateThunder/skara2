@@ -52,10 +52,14 @@ const EXCLUDED_PATH_PREFIXES = ["/admin", "/api", "/_next", "/favicon.ico"];
 
 const NAV_EVENT_LABELS: Record<string, string> = {
   button_click_home: "Home",
-  button_click_about: "About",
+  button_click_the_band: "The Band",
+  button_click_about: "The Band",
   button_click_media: "Media",
-  button_click_mentions: "Mentions",
-  button_click_book_now: "Book now",
+  button_click_services: "Services",
+  button_click_faqs: "FAQs",
+  button_click_reviews: "Reviews",
+  button_click_mentions: "Reviews",
+  button_click_book_now: "Book Now",
   button_click_contact: "Contact",
 };
 
@@ -297,14 +301,32 @@ export async function queryTopLandingPages(
   };
 
   const report = await client.runReport(payload);
-  const rows =
-    report.rows?.map((row) => ({
-      target:
-        NAV_EVENT_LABELS[row.dimensionValues?.[0]?.value ?? ""] ??
-        (row.dimensionValues?.[0]?.value || "Unknown"),
-      clicks: toNumber(row.metricValues?.[0]?.value),
-      users: toNumber(row.metricValues?.[1]?.value),
-    })) ?? [];
+  const totalsByTarget = new Map<string, { clicks: number; users: number }>();
+
+  for (const row of report.rows ?? []) {
+    const eventName = row.dimensionValues?.[0]?.value ?? "";
+    const target = NAV_EVENT_LABELS[eventName] ?? (eventName || "Unknown");
+    const clicks = toNumber(row.metricValues?.[0]?.value);
+    const users = toNumber(row.metricValues?.[1]?.value);
+    const current = totalsByTarget.get(target);
+
+    if (current) {
+      current.clicks += clicks;
+      current.users += users;
+      continue;
+    }
+
+    totalsByTarget.set(target, { clicks, users });
+  }
+
+  const rows = Array.from(totalsByTarget.entries())
+    .map(([target, metrics]) => ({
+      target,
+      clicks: metrics.clicks,
+      users: metrics.users,
+    }))
+    .sort((left, right) => right.clicks - left.clicks)
+    .slice(0, 10);
 
   return {
     data: { rows },

@@ -79,6 +79,11 @@ type SiteMentionRow = {
 };
 
 let publicClient: SupabaseClient | null = null;
+let nextPublicReadRetryAt = 0;
+let lastPublicReadWarningAt = 0;
+
+const PUBLIC_READ_FETCH_TIMEOUT_MS = 2500;
+const PUBLIC_READ_FAILURE_COOLDOWN_MS = 60_000;
 
 function normalizeString(value: unknown, fallback = ""): string {
   if (typeof value !== "string") {
@@ -174,8 +179,54 @@ function getSupabasePublicClient(): SupabaseClient {
       autoRefreshToken: false,
       persistSession: false,
     },
+    global: {
+      fetch: async (input, init) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), PUBLIC_READ_FETCH_TIMEOUT_MS);
+
+        if (init?.signal) {
+          if (init.signal.aborted) {
+            controller.abort();
+          } else {
+            init.signal.addEventListener("abort", () => controller.abort(), { once: true });
+          }
+        }
+
+        try {
+          return await fetch(input, {
+            ...init,
+            signal: controller.signal,
+          });
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      },
+    },
   });
   return publicClient;
+}
+
+function shouldSkipPublicReadAttempt(): boolean {
+  return Date.now() < nextPublicReadRetryAt;
+}
+
+function markPublicReadSuccess(): void {
+  nextPublicReadRetryAt = 0;
+}
+
+function markPublicReadFailure(error: unknown): void {
+  nextPublicReadRetryAt = Date.now() + PUBLIC_READ_FAILURE_COOLDOWN_MS;
+
+  const now = Date.now();
+  if (now - lastPublicReadWarningAt < PUBLIC_READ_FAILURE_COOLDOWN_MS) {
+    return;
+  }
+
+  lastPublicReadWarningAt = now;
+  console.warn(
+    "Supabase site-content read unavailable. Using fallback content for 60 seconds:",
+    getErrorMessage(error, "Unknown error")
+  );
 }
 
 function isMissingNavLayoutColumnError(error: { message?: string } | null | undefined): boolean {
@@ -271,11 +322,17 @@ async function fetchSiteContent(client: SupabaseClient): Promise<SiteContent> {
 }
 
 export async function getSiteContent(): Promise<SiteContent> {
+  if (shouldSkipPublicReadAttempt()) {
+    return fallbackContent;
+  }
+
   try {
     const client = getSupabasePublicClient();
-    return await fetchSiteContent(client);
+    const content = await fetchSiteContent(client);
+    markPublicReadSuccess();
+    return content;
   } catch (error) {
-    console.error("Failed to load site content from Supabase:", getErrorMessage(error, "Unknown error"));
+    markPublicReadFailure(error);
     return fallbackContent;
   }
 }

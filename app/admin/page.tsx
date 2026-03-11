@@ -7,7 +7,6 @@ import { DashboardHeader } from "@/app/admin/components/DashboardHeader";
 import { DashboardLayout } from "@/app/admin/components/DashboardLayout";
 import { KPIGrid } from "@/app/admin/components/KPIGrid";
 import { LandingPagesTable } from "@/app/admin/components/LandingPagesTable";
-import { SiteContentEditor } from "@/app/admin/components/SiteContentEditor";
 import { SetupPanel } from "@/app/admin/components/SetupPanel";
 import { SidebarNav } from "@/app/admin/components/SidebarNav";
 import { TopClicksTable } from "@/app/admin/components/TopClicksTable";
@@ -315,8 +314,6 @@ export default function AdminPage() {
           <CampaignsTable state={campaignsState} />
           <TopClicksTable state={topClicksState} />
         </section>
-
-        <SiteContentEditor />
 
         <SetupPanel keyEvents={keyEvents} examples={setupExamples} />
       </DashboardLayout>

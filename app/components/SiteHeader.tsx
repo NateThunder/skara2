@@ -6,9 +6,11 @@ import type { NavLayoutMode } from "@/app/lib/site-content";
 
 const navItems = [
   { label: "Home", href: "#top" },
-  { label: "About", href: "#about" },
-  { label: "Media", href: "#watch" },
-  { label: "Mentions", href: "#mentions" },
+  { label: "The Band", href: "#the-band" },
+  { label: "Media", href: "#media" },
+  { label: "Services", href: "#services" },
+  { label: "FAQs", href: "#faqs" },
+  { label: "Reviews", href: "#reviews" },
   { label: "Contact", href: "#contact" },
 ];
 const fadeRange = 120;
@@ -211,7 +213,7 @@ export default function SiteHeader({ defaultNavLayoutMode = "hamburger" }: SiteH
         </a>
 
         <nav aria-label="Main" className="site-nav">
-          {navItems.slice(0, 4).map((item) => (
+          {navItems.map((item) => (
             <a
               key={item.label}
               href={item.href}
@@ -223,20 +225,12 @@ export default function SiteHeader({ defaultNavLayoutMode = "hamburger" }: SiteH
             </a>
           ))}
           <a
-            href="#bookings"
+            href="#contact"
             className="site-nav__cta"
             data-track-button="true"
             data-track-label="Book Now"
           >
             Book Now
-          </a>
-          <a
-            href={navItems[4].href}
-            className="site-nav__link"
-            data-track-button="true"
-            data-track-label={navItems[4].label}
-          >
-            {navItems[4].label}
           </a>
         </nav>
 
@@ -288,7 +282,7 @@ export default function SiteHeader({ defaultNavLayoutMode = "hamburger" }: SiteH
             </a>
           ))}
           <a
-            href="#bookings"
+            href="#contact"
             className="site-nav__mobile-cta"
             data-track-button="true"
             data-track-label="Book Now"

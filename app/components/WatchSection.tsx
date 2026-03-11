@@ -1,4 +1,5 @@
 import WatchVideoGrid from "./WatchVideoGrid";
+import type { MediaContent } from "@/app/lib/homepage-content";
 
 type YouTubeVideo = {
   id: string;
@@ -97,7 +98,11 @@ async function getLatestVideos(
     .filter((video): video is YouTubeVideo => video !== null);
 }
 
-export default async function WatchSection() {
+type WatchSectionProps = {
+  content: MediaContent;
+};
+
+export default async function WatchSection({ content }: WatchSectionProps) {
   const apiKey = process.env.YOUTUBE_API_KEY;
   const channelHandle = process.env.YOUTUBE_CHANNEL_HANDLE;
 
@@ -113,20 +118,17 @@ export default async function WatchSection() {
   }
 
   return (
-    <section id="watch" className="watch-section" aria-label="Watch latest YouTube videos">
+    <section id="media" className="watch-section" aria-label="Media section with latest YouTube videos">
       <div className="watch-section__inner">
-        <p className="watch-section__eyebrow">Watch</p>
-        <h2 className="watch-section__title">Latest from YouTube.</h2>
-        <p className="watch-section__subtitle">
-          Recent Skara Ceilidh Band performances direct from the official channel.
-        </p>
+        <p className="watch-section__eyebrow">{content.eyebrow}</p>
+        <h2 className="watch-section__title">{content.heading}</h2>
+        <p className="watch-section__subtitle">{content.subtitle}</p>
 
         {videos.length > 0 ? (
           <WatchVideoGrid videos={videos} />
         ) : (
           <p className="watch-section__empty">
-            Videos are temporarily unavailable. Check the YouTube channel directly for the latest
-            uploads.
+            Videos are temporarily unavailable. Check the YouTube channel directly for the latest uploads.
           </p>
         )}
       </div>

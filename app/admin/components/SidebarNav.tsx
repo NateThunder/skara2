@@ -6,7 +6,6 @@ const navItems = [
   { href: "#kpis", label: "Overview" },
   { href: "#charts", label: "Charts" },
   { href: "#tables", label: "Tables" },
-  { href: "#content", label: "Site editor" },
   { href: "#setup", label: "GA4 setup" },
 ];
 

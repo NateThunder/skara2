@@ -1,13 +1,14 @@
-﻿import SiteHeader from "./components/SiteHeader";
-import BioBanner from "./components/BioBanner";
+import SiteHeader from "./components/SiteHeader";
 import HeroBanner from "./components/HeroBanner";
 import WatchSection from "./components/WatchSection";
-import WhySkaraSection from "./components/WhySkaraSection";
-import MentionsSection from "./components/MentionsSection";
-import BookingsSection from "./components/BookingsSection";
 import CookieSettingsLink from "./components/CookieSettingsLink";
 import SectionDivider from "./components/SectionDivider";
-import { getSiteContent } from "./lib/site-content";
+import TheBandSection from "./components/TheBandSection";
+import ServicesSection from "./components/ServicesSection";
+import ReviewsSection from "./components/ReviewsSection";
+import ContactFaqSection from "./components/ContactFaqSection";
+import { homepageContent } from "./lib/homepage-content";
+import { getSiteNavLayoutMode } from "./lib/site-content";
 
 export const dynamic = "force-dynamic";
 
@@ -51,32 +52,33 @@ const socialLinks = [
 ];
 
 export default async function Home() {
-  const siteContent = await getSiteContent();
+  const navLayoutMode = await getSiteNavLayoutMode();
 
   return (
     <div id="top" className="min-h-screen bg-[#061a2b] text-white">
-      <SiteHeader defaultNavLayoutMode={siteContent.navLayoutMode} />
+      <SiteHeader defaultNavLayoutMode={navLayoutMode} />
+
       <main className="flex w-full flex-1 flex-col">
         <HeroBanner />
         <SectionDivider className="py-6 md:py-8" />
 
-        <BioBanner about={siteContent.about} />
+        <TheBandSection content={homepageContent.theBand} />
         <SectionDivider className="py-6 md:py-8" />
 
-        <WatchSection />
+        <WatchSection content={homepageContent.media} />
         <SectionDivider className="py-6 md:py-8" />
 
-        <WhySkaraSection />
+        <ServicesSection content={homepageContent.services} />
         <SectionDivider className="py-6 md:py-8" />
 
-        <MentionsSection mentions={siteContent.mentions} />
+        <ReviewsSection reviews={homepageContent.reviews} />
         <SectionDivider className="py-6 md:py-8" />
 
-        <BookingsSection />
+        <ContactFaqSection contact={homepageContent.contact} faqs={homepageContent.faqs} />
       </main>
-      <footer id="contact" className="border-t border-white/20 px-6 py-10 text-center sm:px-10">
-        <p className="text-xs uppercase tracking-[0.3em] text-white/65">Contact</p>
-        <p className="mt-3 text-2xl font-semibold text-white">Skara Ceilidh Band</p>
+
+      <footer className="border-t border-white/20 px-6 py-10 text-center sm:px-10">
+        <p className="text-xs uppercase tracking-[0.3em] text-white/65">Skara Ceilidh Band</p>
         <p className="mt-3 text-white/80">
           For bookings and enquiries, email{" "}
           <a className="underline decoration-white/60 underline-offset-4 hover:text-white" href="mailto:info@skaraceilidh.com">
@@ -102,4 +104,3 @@ export default async function Home() {
     </div>
   );
 }
-
