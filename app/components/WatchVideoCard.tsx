@@ -136,6 +136,8 @@ export default function WatchVideoCard({
   const [resumeAtSeconds, setResumeAtSeconds] = useState(0);
   const [inlineAutoplay, setInlineAutoplay] = useState(true);
   const [inlineMuted, setInlineMuted] = useState(false);
+  const [isInlinePlayerReady, setIsInlinePlayerReady] = useState(false);
+  const [isModalPlayerReady, setIsModalPlayerReady] = useState(false);
   const inlinePlayerMountRef = useRef<HTMLDivElement | null>(null);
   const inlinePlayerRef = useRef<YouTubePlayer | null>(null);
   const modalPlayerMountRef = useRef<HTMLDivElement | null>(null);
@@ -165,24 +167,28 @@ export default function WatchVideoCard({
     onActivate(videoId);
     capturePlayerState(modalPlayerRef.current);
 
+    setIsInlinePlayerReady(false);
+    setIsModalPlayerReady(false);
     setIsPopoutOpen(false);
     setIsPlayingInline(true);
   }, [capturePlayerState, onActivate, videoId]);
 
   const playInlineInCard = useCallback(() => {
-    const shouldStartMuted = isMobile;
     onActivate(videoId);
     setResumeAtSeconds(0);
     setInlineAutoplay(true);
-    setInlineMuted(shouldStartMuted);
+    setInlineMuted(false);
+    setIsInlinePlayerReady(false);
+    setIsModalPlayerReady(false);
     setIsPopoutOpen(false);
     setIsPlayingInline(true);
-  }, [isMobile, onActivate, videoId]);
+  }, [onActivate, videoId]);
 
   const openPopout = useCallback(() => {
     onActivate(videoId);
     capturePlayerState(inlinePlayerRef.current);
     setIsPlayingInline(true);
+    setIsModalPlayerReady(false);
     setIsPopoutOpen(true);
   }, [capturePlayerState, onActivate, videoId]);
 
@@ -197,6 +203,7 @@ export default function WatchVideoCard({
 
     const setupInlinePlayer = async () => {
       try {
+        setIsInlinePlayerReady(false);
         const youTube = await loadYouTubeIframeApi();
         if (cancelled || !inlinePlayerMountRef.current) {
           return;
@@ -221,6 +228,7 @@ export default function WatchVideoCard({
                 return;
               }
 
+              setIsInlinePlayerReady(true);
               const time = Math.max(0, Math.floor(resumeAtSeconds));
               target.seekTo(time, true);
 
@@ -245,6 +253,7 @@ export default function WatchVideoCard({
         });
         inlinePlayerRef.current = inlinePlayer;
       } catch {
+        setIsInlinePlayerReady(false);
         setIsPlayingInline(false);
       }
     };
@@ -267,6 +276,7 @@ export default function WatchVideoCard({
 
     const setupPlayer = async () => {
       try {
+        setIsModalPlayerReady(false);
         const youTube = await loadYouTubeIframeApi();
         if (cancelled || !modalPlayerMountRef.current) {
           return;
@@ -281,8 +291,36 @@ export default function WatchVideoCard({
             playsinline: 1,
             start: Math.max(0, Math.floor(resumeAtSeconds)),
           },
+          events: {
+            onReady: ({ target }) => {
+              if (cancelled) {
+                return;
+              }
+
+              if (modalPlayerRef.current && modalPlayerRef.current !== target) {
+                return;
+              }
+
+              setIsModalPlayerReady(true);
+              const time = Math.max(0, Math.floor(resumeAtSeconds));
+              target.seekTo(time, true);
+
+              if (inlineMuted) {
+                target.mute();
+              } else {
+                target.unMute();
+              }
+
+              if (inlineAutoplay) {
+                target.playVideo();
+              } else {
+                target.pauseVideo();
+              }
+            },
+          },
         });
       } catch {
+        setIsModalPlayerReady(false);
         setIsPopoutOpen(false);
         setIsPlayingInline(true);
       }
@@ -342,9 +380,16 @@ export default function WatchVideoCard({
               Pop out
             </button>
           ) : null}
+          {!isInlinePlayerReady ? (
+            <div className="watch-card__loading" aria-hidden="true">
+              <span className="watch-card__loading-label">Loading video...</span>
+            </div>
+          ) : null}
           <div
             ref={inlinePlayerMountRef}
-            className="watch-card__iframe"
+            className={`watch-card__iframe${
+              isInlinePlayerReady ? " watch-card__iframe--ready" : ""
+            }`}
             aria-label={title}
           />
         </div>
@@ -389,7 +434,17 @@ export default function WatchVideoCard({
               <span aria-hidden="true">X</span>
             </button>
             <div className="watch-modal__video-wrap">
-              <div ref={modalPlayerMountRef} className="watch-modal__player" />
+              {!isModalPlayerReady ? (
+                <div className="watch-modal__loading" aria-hidden="true">
+                  <span className="watch-card__loading-label">Loading video...</span>
+                </div>
+              ) : null}
+              <div
+                ref={modalPlayerMountRef}
+                className={`watch-modal__player${
+                  isModalPlayerReady ? " watch-modal__player--ready" : ""
+                }`}
+              />
             </div>
           </div>
         </div>

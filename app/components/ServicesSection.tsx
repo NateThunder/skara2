@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useId, useState, type JSX } from "react";
+import { useId, useRef, useState, type JSX } from "react";
 import type { ServicesContent } from "@/app/lib/homepage-content";
 
 type ServicesSectionProps = {
@@ -51,6 +51,12 @@ const SERVICE_CARDS: ServiceCard[] = [
 const BACKGROUND_MUSIC_IMAGE = "/59759789_858220537873606_773378478769700864_n.jpg";
 const BACKGROUND_MUSIC_ICON_IMAGE = "/background music icon.PNG";
 const DJ_ICON_IMAGE = "/dj icon.PNG";
+const MOBILE_QUERY = "(max-width: 760px)";
+const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
+const MOBILE_PACKAGES_TOP_GAP = 10;
+const MOBILE_MIN_PACKAGE_VISIBILITY = 84;
+const MOBILE_MIN_DETAIL_VISIBILITY = 120;
+const MOBILE_SCROLL_TOLERANCE = 8;
 
 function CeilidhIcon({ className }: IconProps) {
   const iconClassName = className ? `${className} services-icon--ceilidh` : "services-icon--ceilidh";
@@ -244,7 +250,55 @@ function ServiceDetail({ service, content }: { service: ServiceKey; content: Ser
 
 export default function ServicesSection({ content }: ServicesSectionProps) {
   const [activeService, setActiveService] = useState<ServiceKey>("ceilidhs");
+  const packagesRef = useRef<HTMLDivElement | null>(null);
+  const detailsRef = useRef<HTMLDivElement | null>(null);
   const idBase = useId().replace(/:/g, "");
+
+  const handlePackageClick = (service: ServiceKey) => {
+    setActiveService(service);
+
+    if (!window.matchMedia(MOBILE_QUERY).matches) {
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      const packages = packagesRef.current;
+      const details = detailsRef.current;
+      if (!packages || !details) {
+        return;
+      }
+
+      const packagesRect = packages.getBoundingClientRect();
+      const detailsRect = details.getBoundingClientRect();
+      const headerHeightValue = Number.parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--header-height"),
+      );
+      const headerHeight = Number.isFinite(headerHeightValue) ? headerHeightValue : 88;
+      const targetPackagesTop = headerHeight + MOBILE_PACKAGES_TOP_GAP;
+      const currentScrollY = window.scrollY;
+
+      let targetScrollY = currentScrollY + (packagesRect.top - targetPackagesTop);
+
+      const detailsTopAtTarget = detailsRect.top - (targetScrollY - currentScrollY);
+      const maxDetailsTop = window.innerHeight - MOBILE_MIN_DETAIL_VISIBILITY;
+      if (detailsTopAtTarget > maxDetailsTop) {
+        targetScrollY += detailsTopAtTarget - maxDetailsTop;
+      }
+
+      const packagesBottomAtTarget = packagesRect.bottom - (targetScrollY - currentScrollY);
+      if (packagesBottomAtTarget < MOBILE_MIN_PACKAGE_VISIBILITY) {
+        targetScrollY -= MOBILE_MIN_PACKAGE_VISIBILITY - packagesBottomAtTarget;
+      }
+
+      targetScrollY = Math.max(0, Math.round(targetScrollY));
+      if (Math.abs(targetScrollY - currentScrollY) <= MOBILE_SCROLL_TOLERANCE) {
+        return;
+      }
+
+      const behavior = window.matchMedia(REDUCED_MOTION_QUERY).matches ? "auto" : "smooth";
+      window.scrollTo({ top: targetScrollY, behavior });
+    });
+  };
 
   return (
     <section id="services" className="services-section" aria-label="Services">
@@ -255,7 +309,12 @@ export default function ServicesSection({ content }: ServicesSectionProps) {
           <p className="services-section__subtitle">{content.subtitle}</p>
         </header>
 
-        <div className="services-section__packages" role="tablist" aria-label="Professional service packages">
+        <div
+          ref={packagesRef}
+          className="services-section__packages"
+          role="tablist"
+          aria-label="Professional service packages"
+        >
           {SERVICE_CARDS.map((card) => {
             const isActive = card.key === activeService;
             const tabId = `${idBase}-service-tab-${card.key}`;
@@ -271,7 +330,7 @@ export default function ServicesSection({ content }: ServicesSectionProps) {
                 aria-controls={panelId}
                 tabIndex={isActive ? 0 : -1}
                 className={`services-package-card ${isActive ? "is-active" : ""}`}
-                onClick={() => setActiveService(card.key)}
+                onClick={() => handlePackageClick(card.key)}
               >
                 <span className="services-package-card__icon-wrap">
                   <card.Icon className="services-package-card__icon" />
@@ -283,7 +342,7 @@ export default function ServicesSection({ content }: ServicesSectionProps) {
           })}
         </div>
 
-        <div className="services-section__details">
+        <div ref={detailsRef} className="services-section__details">
           {SERVICE_CARDS.map((card) => {
             const isActive = card.key === activeService;
             const tabId = `${idBase}-service-tab-${card.key}`;
