@@ -1,0 +1,10 @@
+{
+  "browser": {
+    "contextOptions": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      }
+    }
+  }
+}
