@@ -86,69 +86,68 @@ export default function HeroBanner() {
             >
               Media
             </a>
+            <button
+              type="button"
+              className="hero-sound-toggle"
+              onClick={toggleSound}
+              aria-pressed={!isMuted}
+              aria-label={isMuted ? "Unmute hero video" : "Mute hero video"}
+            >
+              <svg viewBox="0 0 24 24" className="hero-sound-toggle__icon" aria-hidden="true">
+                {isMuted ? (
+                  <>
+                    <path
+                      d="M5 9v6h4l5 4V5l-5 4H5Z"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16.2 9.2 20.8 13.8"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M20.8 9.2 16.2 13.8"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <path
+                      d="M5 9v6h4l5 4V5l-5 4H5Z"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16.5 9.2a4.5 4.5 0 0 1 0 5.6"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </>
+                )}
+              </svg>
+              <span className="hero-sound-toggle__label">{isMuted ? "Sound Off" : "Sound On"}</span>
+            </button>
           </div>
           <p className="hero-instruments">Fiddle . Pipes . Guitar . Drums</p>
         </div>
       </div>
-
-      <button
-        type="button"
-        className="hero-sound-toggle"
-        onClick={toggleSound}
-        aria-pressed={!isMuted}
-        aria-label={isMuted ? "Unmute hero video" : "Mute hero video"}
-      >
-        <svg viewBox="0 0 24 24" className="hero-sound-toggle__icon" aria-hidden="true">
-          {isMuted ? (
-            <>
-              <path
-                d="M5 9v6h4l5 4V5l-5 4H5Z"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M16.2 9.2 20.8 13.8"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M20.8 9.2 16.2 13.8"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </>
-          ) : (
-            <>
-              <path
-                d="M5 9v6h4l5 4V5l-5 4H5Z"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M16.5 9.2a4.5 4.5 0 0 1 0 5.6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </>
-          )}
-        </svg>
-        <span className="hero-sound-toggle__label">{isMuted ? "Sound Off" : "Sound On"}</span>
-      </button>
     </section>
   );
 }
