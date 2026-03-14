@@ -85,6 +85,17 @@ export default async function Home() {
             info@skaraceilidh.com
           </a>
         </p>
+        <p className="mt-3 text-white/75">
+          Site created by{" "}
+          <a
+            className="underline decoration-white/60 underline-offset-4 hover:text-white"
+            href="https://nathansomevi.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Nathan Somevi
+          </a>
+        </p>
         <CookieSettingsLink />
         <div className="mt-6 flex items-center justify-center gap-3">
           {socialLinks.map((social) => (

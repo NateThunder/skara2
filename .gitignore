@@ -42,6 +42,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+dev-run*
+dev-start.log
+dev-pid.txt
+tmp-*.png
 
 # env files (can opt-in for committing if needed)
 .env*
@@ -59,3 +63,9 @@ next-env.d.ts
 
 # Wrangler local state
 .wrangler
+
+# Local automation and scratch output
+.playwright-cli/
+/output/
+/test-results/
+/cf-deploy-temp/

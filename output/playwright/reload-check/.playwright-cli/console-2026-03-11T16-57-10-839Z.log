@@ -1,9 +1,0 @@
-[    1862ms] [ERROR] Error: <path> attribute d: Expected number, "… 4 2 2 0 0 0 0-4Z". @ http://localhost:3000/:27
-[    1862ms] [ERROR] Error: <path> attribute d: Expected number, "… 4 2 2 0 0 0 0-4Z". @ http://localhost:3000/:27
-[    2667ms] [WARNING] Image with src "/logo white lite.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
-[   62731ms] [ERROR] Error: <path> attribute d: Expected number, "… 4 2 2 0 0 0 0-4Z". @ http://localhost:3000/:27
-[   62732ms] [ERROR] Error: <path> attribute d: Expected number, "… 4 2 2 0 0 0 0-4Z". @ http://localhost:3000/:27
-[   63178ms] [WARNING] Image with src "/logo white lite.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
-[ 2412905ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://pub-9be083b820034f6ca6f0848c01c0eae9.r2.dev/hero-strip-the-willow-no-first-2-frames.mp4:0
-[ 2421025ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://pub-9be083b820034f6ca6f0848c01c0eae9.r2.dev/hero-strip-the-willow-no-first-2-frames.mp4:0
-[ 2427472ms] [ERROR] Failed to load resource: net::ERR_NAME_NOT_RESOLVED @ https://pub-9be083b820034f6ca6f0848c01c0eae9.r2.dev/hero-strip-the-willow-no-first-2-frames.mp4:0
